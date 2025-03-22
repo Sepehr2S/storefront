@@ -1,10 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from store.models import Product
-
+from django.contrib.contenttypes.models import ContentType
+from store.models import Product, Collection
+from tags.models import TaggedItem
 
 def say_hello(request):
-    query_set = Product.objects.all()
-    for product in query_set:
-        print(product)
-    return render(request, 'hello.html', {'query_set': query_set})
+    return render(request, 'hello.html', {'name':"sepehr"})
+ 
