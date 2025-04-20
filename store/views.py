@@ -9,11 +9,17 @@ from .serializer import CollectionSerializer, ProductSerializer, ReviewSerialize
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     def get_serializer_context(self):
         return {'request': self.request}
     
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        collection_id = self.request.query_params.get('collection_id')
+        if collection_id is not None:
+            queryset = queryset.filter(collection_id=collection_id)
+        return queryset
+
     def destroy(self, request, *args, **kwargs):
         if OrderItem.objects.filter(product=kwargs['pk']).count() > 0:
             return Response({'error': 'Product cannot be deleted because it is associated with an order item.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
