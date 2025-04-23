@@ -1,12 +1,13 @@
 from django.db.models.aggregates import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.mixins import CreateModelMixin
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .pagination import DefaultPagination
-from .models import Collection, Product, OrderItem, Review
-from .serializer import CollectionSerializer, ProductSerializer, ReviewSerializer
+from .models import Collection, Product, OrderItem, Review, Cart
+from .serializer import CollectionSerializer, ProductSerializer, ReviewSerializer, CartSerializer
 from .filters import ProductFilter
 
 
@@ -31,6 +32,7 @@ class ProductViewSet(ModelViewSet):
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('products')).all()
     serializer_class = CollectionSerializer
+
     def destroy(self, request, *args, **kwargs):
         if Product.objects.filter(collection_id=kwargs['pk']):
             return Response({'error': 'Collection cannot be deleted because it includes one or more products.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -45,3 +47,8 @@ class ReviewViewSet(ModelViewSet):
     def get_serializer_context(self):
         return {'product_id': self.kwargs['product_pk']}
     serializer_class = ReviewSerializer
+
+
+class CartViewSet(CreateModelMixin, GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
