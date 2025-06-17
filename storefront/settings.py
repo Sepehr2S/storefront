@@ -147,9 +147,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES' : ('JWT',),
-}
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -165,4 +162,5 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    'AUTH_HEADER_TYPES' : ('JWT',),
     }
