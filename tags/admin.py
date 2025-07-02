@@ -3,6 +3,7 @@ from .models import Tag
 
 # Register your models here.
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    search_fields = ['lable']
+    search_fields = ['label']
